@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-# Theralink
-TheraLink is an IoT-based assistive system designed for stroke and physically challenged individuals, enabling device control through Voice, Gesture/Finger, and Breath-based interaction using ESP32 and Arduino.
-=======
-# TheraLink – IoT Assistive System
-
-TheraLink is an IoT-based assistive technology project developed to support people affected by stroke and severe physical disabilities. The system enables patients to interact with and control devices independently using multiple accessible input methods.
-
-## 🚀 Features
-
-## 🛠️ Technologies Used
-
-## 👨‍💻 Team Contributions
-
-## 🎯 Project Goal
-To create an affordable and accessible assistive solution that improves independence and quality of life for physically challenged individuals.
-
-## 📌 Project Domain
-IoT | Embedded Systems | Assistive Technology | Healthcare Innovation
 # TheraLink - IoT Assistive System
 
 TheraLink is an IoT-based assistive technology project developed to support people affected by stroke and severe physical disabilities. The system enables patients to interact with and control devices independently using multiple accessible input methods.
