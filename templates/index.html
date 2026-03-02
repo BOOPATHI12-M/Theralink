@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheraLink — Smart Assistive System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --pink-bg: #f5e6f0;
+            --pink-light: #fdf2f8;
+            --pink-mid: #e8c6dc;
+            --pink-accent: #d4a0c0;
+            --lavender: #e8daf0;
+            --white: #ffffff;
+            --dark: #1a1a2e;
+            --text: #2d2d3d;
+            --text-light: #6b7280;
+            --green: #22c55e;
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --blue: #3b82f6;
+            --radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--pink-light);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        nav {
+            background: var(--white);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0e0eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo .logo-circle {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .nav-logo .logo-circle img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-logo span { font-size: 1rem; font-weight: 600; color: var(--dark); }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+
+        .nav-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 1px solid #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.1rem;
+            background: var(--white); transition: all 0.2s; text-decoration: none;
+        }
+        .nav-icon:hover { background: var(--pink-bg); }
+
+        .nav-status {
+            padding: 8px 20px; border-radius: 24px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px;
+        }
+        .status-online  { background: #dcfce7; color: #166534; }
+        .status-offline { background: #fee2e2; color: #991b1b; }
+
+        /* ========== MARQUEE BANNER ========== */
+        .marquee-banner {
+            background: var(--dark); color: var(--white);
+            padding: 12px 0; overflow: hidden; white-space: nowrap;
+            font-size: 0.85rem; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .marquee-inner {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+        .marquee-inner span { margin: 0 30px; }
+        .marquee-inner .dot {
+            display: inline-block; width: 6px; height: 6px;
+            border-radius: 50%; background: var(--pink-accent);
+            margin: 0 18px; vertical-align: middle;
+        }
+        @keyframes marquee {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-alert { background: var(--red) !important; }
+
+        /* ========== HERO SECTION ========== */
+        .hero-wrap { background: var(--pink-bg); }
+
+        .hero {
+            padding: 50px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem; font-weight: 900;
+            line-height: 1.1; color: var(--dark);
+            margin-bottom: 18px;
+        }
+
+        .hero-text p {
+            font-size: 1rem; color: var(--text-light);
+            line-height: 1.65; margin-bottom: 30px; max-width: 420px;
+        }
+
+        .hero-links { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+        .hero-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--dark); color: var(--white);
+            padding: 14px 28px; border-radius: 30px; border: none;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; text-decoration: none;
+        }
+        .hero-btn:hover {
+            background: #2d2d4e; transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26,26,46,0.3);
+        }
+        .hero-btn .arrow {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; background: var(--white);
+            color: var(--dark); border-radius: 50%; font-size: 0.8rem;
+        }
+        .hero-link {
+            color: var(--dark); font-weight: 600; font-size: 0.9rem;
+            text-decoration: underline; text-underline-offset: 4px;
+        }
+
+        /* Hero mode + relays card */
+        .hero-stats-card {
+            background: var(--white); border-radius: 24px;
+            padding: 36px; box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+            position: relative;
+        }
+        .hero-stats-card .tag {
+            display: inline-block; background: var(--lavender);
+            color: var(--dark); padding: 6px 16px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600; margin-bottom: 20px;
+        }
+
+        /* Mode indicator */
+        .mode-display {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .mode-chip {
+            padding: 10px 18px; border-radius: 12px;
+            font-size: 0.82rem; font-weight: 700;
+            border: 2px solid #e5e7eb; background: var(--white);
+            color: var(--text-light); cursor: pointer;
+            transition: all 0.3s; flex: 1; text-align: center;
+        }
+        .mode-chip.active {
+            background: var(--dark); color: var(--white);
+            border-color: var(--dark);
+            box-shadow: 0 4px 12px rgba(26,26,46,0.2);
+        }
+        .mode-chip:hover:not(.active) { background: var(--pink-bg); border-color: var(--pink-accent); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .stat-item {
+            text-align: center; padding: 18px 12px;
+            background: var(--pink-light); border-radius: 16px;
+            transition: transform 0.2s;
+        }
+        .stat-item:hover { transform: scale(1.03); }
+        .stat-item .stat-icon  { font-size: 1.8rem; margin-bottom: 6px; }
+        .stat-item .stat-label { font-size: 0.68rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .stat-item .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--dark); }
+        .stat-item .stat-unit  { font-size: 0.72rem; color: var(--text-light); font-weight: 500; }
+
+        .stat-fan .stat-value { color: #3b82f6; }
+        .stat-light .stat-value { color: #f59e0b; }
+        .stat-emergency .stat-value { color: #ef4444; }
+
+        /* floating badges */
+        .hero-badge {
+            position: absolute; background: var(--white);
+            border-radius: 12px; padding: 8px 16px;
+            font-size: 0.75rem; font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .hero-badge.badge-tr { top: -14px; right: 30px; }
+        .hero-badge.badge-bl { bottom: -14px; left: 30px; }
+        .badge-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .badge-green { background: var(--green); }
+
+        /* ========== SECTION COMMON ========== */
+        .section {
+            max-width: 1300px; margin: 0 auto; padding: 50px 40px;
+        }
+        .section-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-end; margin-bottom: 32px;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem; font-weight: 800; color: var(--dark);
+        }
+        .section-header p { color: var(--text-light); font-size: 0.92rem; max-width: 340px; }
+
+        .section-tags { display: flex; gap: 10px; }
+        .tag-pill {
+            padding: 8px 20px; border-radius: 24px; font-size: 0.8rem;
+            font-weight: 600; border: 1px solid #e5e7eb;
+            background: var(--white); color: var(--text);
+        }
+        .tag-pill.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
+
+        /* ========== GSM EMERGENCY BANNER ========== */
+        .gsm-banner {
+            max-width: 1300px; margin: 0 auto; padding: 0 40px;
+        }
+        .gsm-card {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fecaca;
+            border-radius: 20px; padding: 24px 32px;
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 20px; flex-wrap: wrap;
+        }
+        .gsm-card.active {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-color: var(--red);
+            animation: gsm-pulse 1.5s infinite;
+        }
+        @keyframes gsm-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+        }
+        .gsm-info { flex: 1; }
+        .gsm-info h3 { font-size: 1.1rem; font-weight: 700; color: #991b1b; margin-bottom: 4px; }
+        .gsm-info p { font-size: 0.88rem; color: #b91c1c; }
+        .gsm-status {
+            font-size: 1.8rem; font-weight: 900;
+            color: #991b1b; white-space: nowrap;
+        }
+
+        /* ========== RELAY CONTROL CARDS ========== */
+        .relay-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .relay-card {
+            background: var(--white); border-radius: 20px;
+            padding: 34px 28px 28px; box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+            position: relative; transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #f0e0eb;
+        }
+        .relay-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+        }
+        .relay-card .corner-icon {
+            position: absolute; top: 16px; right: 16px;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1px solid #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; background: var(--white);
+        }
+        .relay-card.emergency { border-color: #fecaca; }
+        .relay-card.emergency:hover { box-shadow: 0 16px 48px rgba(239,68,68,0.1); }
+
+        .relay-icon-big {
+            width: 100px; height: 100px; border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.8rem; margin-bottom: 18px; transition: all 0.3s;
+        }
+        .relay-icon-off { background: #fef2f2; }
+        .relay-icon-on  { background: #dcfce7; }
+        .relay-icon-emergency-on { background: #fee2e2; animation: gsm-pulse 1.5s infinite; }
+
+        .relay-card .relay-name  { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+        .relay-card .relay-sub   { font-size: 0.78rem; color: var(--text-light); margin-bottom: 8px; }
+
+        .relay-status-text { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; }
+        .relay-status-on   { color: var(--green); }
+        .relay-status-off  { color: var(--red); }
+
+        .relay-toggle-btn {
+            width: 100%; padding: 14px 0; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            transition: all 0.25s; border: 2px solid; letter-spacing: 0.5px;
+        }
+        .btn-turn-on  { background: var(--dark); color: var(--white); border-color: var(--dark); }
+        .btn-turn-on:hover  { background: #2d2d4e; box-shadow: 0 6px 20px rgba(26,26,46,0.25); }
+        .btn-turn-off { background: var(--white); color: var(--red); border-color: var(--red); }
+        .btn-turn-off:hover { background: #fef2f2; box-shadow: 0 6px 20px rgba(239,68,68,0.15); }
+        .relay-toggle-btn:active  { transform: scale(0.97); }
+        .relay-toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Mode trigger info */
+        .relay-triggers {
+            margin-top: 12px; padding-top: 12px;
+            border-top: 1px solid #f3e8f0; width: 100%;
+        }
+        .trigger-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 4px 0; font-size: 0.75rem; color: var(--text-light);
+        }
+        .trigger-row .trigger-icon { font-size: 0.9rem; width: 20px; text-align: center; }
+
+        /* ========== BREATH MONITOR ========== */
+        .breath-section {
+            max-width: 1300px; margin: 0 auto; padding: 0 40px 30px;
+        }
+        .breath-card {
+            background: var(--white); border-radius: 20px;
+            padding: 28px; box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            border: 1px solid #f0e0eb;
+            display: flex; gap: 30px; align-items: center; flex-wrap: wrap;
+        }
+        .breath-meter {
+            flex: 1; min-width: 200px;
+        }
+        .breath-meter h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem; font-weight: 800; margin-bottom: 12px;
+        }
+        .breath-bar-wrap {
+            background: #f3e8f0; border-radius: 12px;
+            height: 28px; overflow: hidden; position: relative;
+        }
+        .breath-bar {
+            height: 100%; border-radius: 12px;
+            background: linear-gradient(90deg, #c084c8, #9333ea);
+            transition: width 0.5s ease; width: 0%;
+        }
+        .breath-bar-label {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem; font-weight: 700; color: var(--dark);
+        }
+        .breath-stats {
+            display: flex; gap: 16px;
+        }
+        .breath-stat {
+            text-align: center; padding: 14px 24px;
+            background: var(--pink-light); border-radius: 14px;
+        }
+        .breath-stat .b-val { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
+        .breath-stat .b-lbl { font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+
+        /* ========== HISTORY TABLE ========== */
+        .history-card {
+            background: var(--white); border-radius: 20px;
+            overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            border: 1px solid #f0e0eb;
+        }
+        .history-card-header {
+            background: var(--pink-bg); padding: 22px 28px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .history-card-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem; font-weight: 800; color: var(--dark);
+        }
+        .history-count {
+            background: var(--dark); color: var(--white);
+            padding: 4px 14px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            padding: 14px 20px; text-align: left; font-size: 0.72rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-light); border-bottom: 1px solid #f3e8f0;
+        }
+        td {
+            padding: 13px 20px; font-size: 0.85rem;
+            color: var(--text); border-bottom: 1px solid #faf5f8;
+        }
+        tr:hover td { background: var(--pink-light); }
+        td:first-child { color: var(--text-light); font-size: 0.82rem; }
+
+        .badge-sm {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 600;
+        }
+        .badge-on  { background: #dcfce7; color: #166534; }
+        .badge-off { background: #fee2e2; color: #991b1b; }
+        .badge-mode { background: var(--lavender); color: var(--dark); }
+
+        /* ========== UPDATE BAR ========== */
+        .update-bar {
+            text-align: center; padding: 18px;
+            color: var(--text-light); font-size: 0.82rem; font-weight: 500;
+        }
+        .update-bar span { font-weight: 700; color: var(--dark); }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--dark); color: rgba(255,255,255,0.5);
+            text-align: center; padding: 32px 20px;
+            font-size: 0.82rem; margin-top: 20px;
+        }
+        footer strong { color: var(--white); }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            .relay-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; padding: 40px 20px; gap: 30px; }
+            .hero-text h1 { font-size: 2.2rem; }
+            .section { padding: 30px 20px; }
+            .section-header h2 { font-size: 1.6rem; }
+            nav { padding: 12px 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+            .hero-badge { display: none; }
+            .mode-display { flex-wrap: wrap; }
+            .breath-section { padding: 0 20px 20px; }
+            .breath-card { flex-direction: column; }
+            .gsm-banner { padding: 0 20px; }
+        }
+        @media (max-width: 480px) {
+            .relay-grid { grid-template-columns: 1fr; }
+            .hero-text h1 { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav>
+        <div class="nav-logo">
+            <div class="logo-circle"><img src="/static/images/logo.svg" alt="TheraLink"></div>
+            <span>TheraLink</span>
+        </div>
+        <div class="nav-right">
+            <a href="/dashboard" class="nav-icon" title="Dashboard" style="text-decoration:none;">&#128202;</a>
+            <div class="nav-icon" title="Notifications">&#128276;</div>
+            <div class="nav-icon" title="Settings">&#9881;&#65039;</div>
+            <span class="nav-status status-offline" id="status-badge">&#9679; OFFLINE</span>
+        </div>
+    </nav>
+
+    <!-- ========== MARQUEE BANNER ========== -->
+    <div class="marquee-banner" id="marquee-banner">
+        <div class="marquee-inner">
+            <span>SMART ASSISTIVE SYSTEM</span><span class="dot"></span>
+            <span>VOICE &bull; IR GESTURE &bull; BREATH CONTROL</span><span class="dot"></span>
+            <span>3 RELAY OUTPUTS</span><span class="dot"></span>
+            <span>GSM EMERGENCY CALL</span><span class="dot"></span>
+            <span>SMART ASSISTIVE SYSTEM</span><span class="dot"></span>
+            <span>VOICE &bull; IR GESTURE &bull; BREATH CONTROL</span><span class="dot"></span>
+            <span>3 RELAY OUTPUTS</span><span class="dot"></span>
+            <span>GSM EMERGENCY CALL</span><span class="dot"></span>
+        </div>
+    </div>
+
+    <!-- ========== HERO SECTION ========== -->
+    <div class="hero-wrap">
+        <div class="hero">
+            <div class="hero-text">
+                <h1>SMART<br>ASSISTIVE<br>SYSTEM.</h1>
+                <p>Control your environment with voice commands, IR gestures, or breath patterns. Fan, light, and emergency relay &mdash; all accessible from any device on your network.</p>
+                <div class="hero-links">
+                    <a href="#relays" class="hero-btn">
+                        Control Relays <span class="arrow">&#8595;</span>
+                    </a>
+                    <a href="#history" class="hero-link">View activity log</a>
+                </div>
+            </div>
+            <div class="hero-stats-card">
+                <div class="hero-badge badge-tr">
+                    <span class="badge-dot badge-green"></span> ESP32 Connected
+                </div>
+                <div class="hero-badge badge-bl">
+                    <span class="badge-dot badge-green"></span> 3 Modes
+                </div>
+
+                <div class="tag">&#127897; Active Control Mode</div>
+
+                <!-- Mode selector -->
+                <div class="mode-display">
+                    <div class="mode-chip active" id="mode-0" onclick="switchMode(0)">&#127908; Voice</div>
+                    <div class="mode-chip" id="mode-1" onclick="switchMode(1)">&#128075; IR Gesture</div>
+                    <div class="mode-chip" id="mode-2" onclick="switchMode(2)">&#128168; Breath</div>
+                </div>
+
+                <!-- Relay status summary -->
+                <div class="stats-grid">
+                    <div class="stat-item stat-fan">
+                        <div class="stat-icon">&#128168;</div>
+                        <div class="stat-label">Fan</div>
+                        <div class="stat-value" id="hero-fan">OFF</div>
+                        <div class="stat-unit">Relay 1</div>
+                    </div>
+                    <div class="stat-item stat-light">
+                        <div class="stat-icon">&#128161;</div>
+                        <div class="stat-label">Light</div>
+                        <div class="stat-value" id="hero-light">OFF</div>
+                        <div class="stat-unit">Relay 2</div>
+                    </div>
+                    <div class="stat-item stat-emergency">
+                        <div class="stat-icon">&#128680;</div>
+                        <div class="stat-label">Emergency</div>
+                        <div class="stat-value" id="hero-emergency">OFF</div>
+                        <div class="stat-unit">Relay 3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ALERT / GSM BANNER ========== -->
+    <div class="marquee-banner marquee-alert" id="alert-banner" style="display:none;">
+        <div class="marquee-inner">
+            <span>&#9888;&#65039; EMERGENCY RELAY ACTIVE &mdash; GSM CALL PENDING</span><span class="dot"></span>
+            <span>&#9888;&#65039; PRESS CANCEL BUTTON ON DEVICE TO ABORT</span><span class="dot"></span>
+            <span>&#9888;&#65039; EMERGENCY RELAY ACTIVE &mdash; GSM CALL PENDING</span><span class="dot"></span>
+            <span>&#9888;&#65039; PRESS CANCEL BUTTON ON DEVICE TO ABORT</span><span class="dot"></span>
+        </div>
+    </div>
+
+    <!-- ========== GSM EMERGENCY STATUS ========== -->
+    <div class="gsm-banner" id="gsm-section" style="margin-top:20px;">
+        <div class="gsm-card" id="gsm-card">
+            <div class="gsm-info">
+                <h3>&#128222; GSM Emergency System</h3>
+                <p id="gsm-message">System idle &mdash; no emergency active. Triggered by 3+ IR gestures or voice command.</p>
+            </div>
+            <div class="gsm-status" id="gsm-status-text">IDLE</div>
+        </div>
+    </div>
+
+    <!-- ========== BREATH MONITOR ========== -->
+    <div class="breath-section" style="margin-top:20px;">
+        <div class="breath-card">
+            <div class="breath-meter">
+                <h3>&#128168; Breath / Sound Level (MAX4466)</h3>
+                <div class="breath-bar-wrap">
+                    <div class="breath-bar" id="breath-bar"></div>
+                    <div class="breath-bar-label" id="breath-bar-label">0</div>
+                </div>
+            </div>
+            <div class="breath-stats">
+                <div class="breath-stat">
+                    <div class="b-val" id="breath-level">0</div>
+                    <div class="b-lbl">Level</div>
+                </div>
+                <div class="breath-stat">
+                    <div class="b-val" id="breath-count">0</div>
+                    <div class="b-lbl">Breaths</div>
+                </div>
+                <div class="breath-stat">
+                    <div class="b-val" id="ir-count">0</div>
+                    <div class="b-lbl">IR Gestures</div>
+                </div>
+                <div class="breath-stat" style="background:#e8daf0;">
+                    <div class="b-val" id="voice-cmd" style="font-size:1rem;">--</div>
+                    <div class="b-lbl">🎤 Voice CMD</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== RELAY CONTROL ========== -->
+    <div class="section" id="relays">
+        <div class="section-header">
+            <div>
+                <h2>RELAY CONTROL</h2>
+                <p style="margin-top:8px;">Control fan, light, and emergency relay. Each can be triggered by voice, IR gesture, or breath.</p>
+            </div>
+            <div class="section-tags">
+                <span class="tag-pill active">All Relays</span>
+                <span class="tag-pill" id="current-mode-pill">Mode: Voice</span>
+            </div>
+        </div>
+
+        <div class="relay-grid">
+            <!-- Relay 1 — Fan -->
+            <div class="relay-card">
+                <div class="corner-icon">&#128168;</div>
+                <div class="relay-icon-big relay-icon-off" id="relay1-icon">&#128168;</div>
+                <div class="relay-name">Fan</div>
+                <div class="relay-sub">Relay 1 &middot; Pin 16</div>
+                <div class="relay-status-text relay-status-off" id="relay1-val">OFF</div>
+                <button class="relay-toggle-btn btn-turn-on" id="relay1-btn" onclick="toggleRelay('relay1')">
+                    Turn ON
+                </button>
+                <div class="relay-triggers">
+                    <div class="trigger-row"><span class="trigger-icon">&#127908;</span> Voice: "Turn on fan" (CMD 5/6)</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128075;</span> IR: 1 gesture</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128168;</span> Breath: 1 breath</div>
+                </div>
+            </div>
+
+            <!-- Relay 2 — Light -->
+            <div class="relay-card">
+                <div class="corner-icon">&#128161;</div>
+                <div class="relay-icon-big relay-icon-off" id="relay2-icon">&#128161;</div>
+                <div class="relay-name">Light</div>
+                <div class="relay-sub">Relay 2 &middot; Pin 17</div>
+                <div class="relay-status-text relay-status-off" id="relay2-val">OFF</div>
+                <button class="relay-toggle-btn btn-turn-on" id="relay2-btn" onclick="toggleRelay('relay2')">
+                    Turn ON
+                </button>
+                <div class="relay-triggers">
+                    <div class="trigger-row"><span class="trigger-icon">&#127908;</span> Voice: "Turn on light" (CMD 7/8)</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128075;</span> IR: 2 gestures</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128168;</span> Breath: 2 breaths</div>
+                </div>
+            </div>
+
+            <!-- Relay 3 — Emergency -->
+            <div class="relay-card emergency">
+                <div class="corner-icon">&#128680;</div>
+                <div class="relay-icon-big relay-icon-off" id="relay3-icon">&#128680;</div>
+                <div class="relay-name">Emergency</div>
+                <div class="relay-sub">Relay 3 &middot; Pin 18 &middot; GSM Call</div>
+                <div class="relay-status-text relay-status-off" id="relay3-val">OFF</div>
+                <button class="relay-toggle-btn btn-turn-on" id="relay3-btn" onclick="toggleRelay('relay3')">
+                    Turn ON
+                </button>
+                <div class="relay-triggers">
+                    <div class="trigger-row"><span class="trigger-icon">&#127908;</span> Voice: CMD 11/12</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128075;</span> IR: 3+ gestures</div>
+                    <div class="trigger-row"><span class="trigger-icon">&#128222;</span> Auto-dials GSM after 7s</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LAST UPDATED ========== -->
+    <div class="update-bar">
+        Last update: <span id="last-updated">waiting&hellip;</span> &middot; Auto-refreshes every 3 seconds
+    </div>
+
+    <!-- ========== HISTORY SECTION ========== -->
+    <div class="section" id="history">
+        <div class="section-header">
+            <div>
+                <h2>ACTIVITY LOG</h2>
+                <p style="margin-top:8px;">Track mode changes, relay states, and breath levels over time.</p>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <div class="history-card-header">
+                <h3>&#128203; System Activity</h3>
+                <span class="history-count" id="history-count">0 entries</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Mode</th>
+                        <th>Voice Action</th>
+                        <th>Fan</th>
+                        <th>Light</th>
+                        <th>Emergency</th>
+                        <th>Breath</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    <tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:30px;">No data yet &mdash; waiting for ESP32&hellip;</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <strong>TheraLink</strong> &mdash; Smart Assistive System &bull; Voice &bull; IR Gesture &bull; Breath Control<br>
+        <span style="margin-top:6px;display:inline-block;">ESP32 + Flask + 3 Control Modes + GSM Emergency</span>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        const POLL_INTERVAL = 3000;
+
+        function updateRelayUI(relayId, isOn) {
+            const valEl  = document.getElementById(relayId + "-val");
+            const btnEl  = document.getElementById(relayId + "-btn");
+            const iconEl = document.getElementById(relayId + "-icon");
+
+            valEl.textContent = isOn ? "ON" : "OFF";
+            valEl.className   = "relay-status-text " + (isOn ? "relay-status-on" : "relay-status-off");
+
+            btnEl.textContent = isOn ? "Turn OFF" : "Turn ON";
+            btnEl.className   = "relay-toggle-btn " + (isOn ? "btn-turn-off" : "btn-turn-on");
+
+            if (relayId === "relay3" && isOn) {
+                iconEl.className = "relay-icon-big relay-icon-emergency-on";
+            } else {
+                iconEl.className = "relay-icon-big " + (isOn ? "relay-icon-on" : "relay-icon-off");
+            }
+        }
+
+        function updateModeUI(mode) {
+            document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+            const chip = document.getElementById('mode-' + mode);
+            if (chip) chip.classList.add('active');
+
+            const modeNames = {0: "Voice", 1: "IR Gesture", 2: "Breath"};
+            const pill = document.getElementById('current-mode-pill');
+            if (pill) pill.textContent = "Mode: " + (modeNames[mode] || "Unknown");
+        }
+
+        function updateGSMUI(gsmStatus, cancelRemaining) {
+            const card = document.getElementById('gsm-card');
+            const msg = document.getElementById('gsm-message');
+            const status = document.getElementById('gsm-status-text');
+            const alert = document.getElementById('alert-banner');
+
+            if (gsmStatus === "waiting_cancel") {
+                card.classList.add('active');
+                msg.textContent = "Emergency triggered! Press cancel button on device within " + cancelRemaining + "s to abort GSM call.";
+                status.textContent = cancelRemaining + "s";
+                alert.style.display = "block";
+            } else if (gsmStatus === "calling") {
+                card.classList.add('active');
+                msg.textContent = "GSM call is being placed to emergency contact!";
+                status.textContent = "CALLING";
+                alert.style.display = "block";
+            } else {
+                card.classList.remove('active');
+                msg.textContent = "System idle \u2014 no emergency active. Triggered by 3+ IR gestures or voice command.";
+                status.textContent = "IDLE";
+                alert.style.display = "none";
+            }
+        }
+
+        async function switchMode(mode) {
+            try {
+                const res = await fetch("/api/mode", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mode: mode })
+                });
+                if (res.ok) {
+                    updateModeUI(mode);
+                }
+            } catch (err) {
+                console.error("Mode switch error:", err);
+            }
+        }
+
+        async function toggleRelay(relayId) {
+            const btn = document.getElementById(relayId + "-btn");
+            btn.disabled = true;
+            btn.textContent = "Sending\u2026";
+
+            const valEl = document.getElementById(relayId + "-val");
+            const currentlyOn = valEl.textContent === "ON";
+            const newState = !currentlyOn;
+
+            try {
+                const res = await fetch("/api/relay", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ relay: relayId, state: newState })
+                });
+                if (res.ok) {
+                    updateRelayUI(relayId, newState);
+                } else {
+                    alert("Failed to toggle relay");
+                }
+            } catch (err) {
+                console.error("Toggle error:", err);
+                alert("Server unreachable");
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const res = await fetch("/api/data");
+                if (!res.ok) throw new Error("Server error");
+                const d = await res.json();
+
+                // Update relay statuses
+                updateRelayUI("relay1", d.relay1);
+                updateRelayUI("relay2", d.relay2);
+                updateRelayUI("relay3", d.relay3);
+
+                // Hero summary
+                document.getElementById("hero-fan").textContent = d.relay1 ? "ON" : "OFF";
+                document.getElementById("hero-light").textContent = d.relay2 ? "ON" : "OFF";
+                document.getElementById("hero-emergency").textContent = d.relay3 ? "ON" : "OFF";
+
+                // Mode
+                updateModeUI(d.mode || 0);
+
+                // Breath monitor
+                const breathLvl = d.breath_level || 0;
+                const breathPct = Math.min(100, Math.round(breathLvl / 10));
+                document.getElementById("breath-level").textContent = breathLvl;
+                document.getElementById("breath-count").textContent = d.breath_count || 0;
+                document.getElementById("ir-count").textContent = d.ir_count || 0;
+                document.getElementById("breath-bar").style.width = breathPct + "%";
+                document.getElementById("breath-bar-label").textContent = breathLvl;
+
+                // Voice command display
+                const voiceEl = document.getElementById("voice-cmd");
+                if (d.voice_action && d.voice_action !== "") {
+                    voiceEl.textContent = d.voice_action;
+                    voiceEl.style.color = "#9333ea";
+                } else {
+                    voiceEl.textContent = "--";
+                    voiceEl.style.color = "";
+                }
+
+                // GSM status
+                updateGSMUI(d.gsm_status || "idle", d.cancel_remaining || 0);
+
+                // Last updated
+                document.getElementById("last-updated").textContent = d.last_updated;
+
+                // Connection status
+                const badge = document.getElementById("status-badge");
+                if (d.last_updated && d.last_updated !== "No data yet") {
+                    badge.textContent = "\u25CF ONLINE";
+                    badge.className = "nav-status status-online";
+                } else {
+                    badge.textContent = "\u25CF WAITING";
+                    badge.className = "nav-status status-offline";
+                }
+
+                // History table
+                if (d.history && d.history.length > 0) {
+                    document.getElementById("history-count").textContent = d.history.length + " entries";
+                    const tbody = document.getElementById("history-body");
+                    const recent = d.history.slice(-20).reverse();
+                    let rows = "";
+                    for (const h of recent) {
+                        const r1 = h.relay1 ? '<span class="badge-sm badge-on">ON</span>' : '<span class="badge-sm badge-off">OFF</span>';
+                        const r2 = h.relay2 ? '<span class="badge-sm badge-on">ON</span>' : '<span class="badge-sm badge-off">OFF</span>';
+                        const r3 = h.relay3 ? '<span class="badge-sm badge-on">ON</span>' : '<span class="badge-sm badge-off">OFF</span>';
+                        const va = h.voice_action ? '<span class="badge-sm" style="background:#e8daf0;color:#1a1a2e;">' + h.voice_action + '</span>' : '<span style="color:#ccc;">--</span>';
+                        rows += '<tr>' +
+                            '<td>' + h.time + '</td>' +
+                            '<td><span class="badge-sm badge-mode">' + (h.mode || '--') + '</span></td>' +
+                            '<td>' + va + '</td>' +
+                            '<td>' + r1 + '</td>' +
+                            '<td>' + r2 + '</td>' +
+                            '<td>' + r3 + '</td>' +
+                            '<td>' + (h.breath_level || 0) + '</td>' +
+                        '</tr>';
+                    }
+                    tbody.innerHTML = rows;
+                }
+
+            } catch (err) {
+                console.error("Fetch error:", err);
+                const badge = document.getElementById("status-badge");
+                badge.textContent = "\u25CF OFFLINE";
+                badge.className = "nav-status status-offline";
+            }
+        }
+
+        setInterval(fetchData, POLL_INTERVAL);
+        fetchData();
+    </script>
+
+</body>
+</html>

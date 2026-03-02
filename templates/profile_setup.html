@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TheraLink — Profile Setup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink:     #f5e6f0;
+      --lavender: #e8daf0;
+      --deep:     #c084c8;
+      --accent:   #9333ea;
+      --dark:     #1a0a2e;
+      --text:     #3b1f5e;
+      --muted:    #7c5fa0;
+      --white:    #ffffff;
+      --error:    #ef4444;
+      --success:  #22c55e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--lavender) 50%, #ddd6f3 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(192,132,200,0.3), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(147,51,234,0.2), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(147,51,234,0.15), 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 560px;
+      padding: 48px 44px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .brand-icon {
+      width: 64px; height: 64px;
+      margin-bottom: 14px;
+    }
+    .brand-icon img {
+      width: 100%; height: 100%;
+      border-radius: 14px;
+    }
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 24px 0 32px;
+    }
+    .step-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #e2d9f3;
+      transition: all 0.3s;
+    }
+    .step-dot.active {
+      background: var(--accent);
+      width: 30px;
+      border-radius: 5px;
+    }
+    .step-dot.done {
+      background: var(--success);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .alert.error  { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; display: block; }
+    .alert.success{ background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .section-subtitle {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2d9f3;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--dark);
+      background: rgba(255,255,255,0.9);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--deep);
+      box-shadow: 0 0 0 4px rgba(192,132,200,0.2);
+    }
+    .form-group input::placeholder { color: #bba8d4; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* Relationship pills */
+    .relation-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .relation-pill {
+      padding: 10px 20px;
+      border: 2px solid #e2d9f3;
+      border-radius: 24px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--white);
+      user-select: none;
+    }
+    .relation-pill:hover {
+      border-color: var(--deep);
+      background: var(--pink);
+    }
+    .relation-pill.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--deep), var(--accent));
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(147,51,234,0.25);
+    }
+
+    .manual-relation {
+      display: none;
+      margin-top: 10px;
+    }
+    .manual-relation.show { display: block; }
+
+    /* Patient section */
+    .patient-section {
+      background: var(--pink);
+      border-radius: 16px;
+      padding: 22px 20px;
+      margin-top: 8px;
+      margin-bottom: 22px;
+    }
+    .patient-section .section-title {
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--deep), var(--accent));
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(147,51,234,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(147,51,234,0.45);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--accent);
+      border: 2px solid #e2d9f3;
+      margin-top: 10px;
+    }
+    .btn-secondary:hover {
+      border-color: var(--deep);
+      background: var(--pink);
+    }
+
+    .btn-loader { display: none; }
+    .btn.loading .btn-text  { display: none; }
+    .btn.loading .btn-loader{ display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block; vertical-align: middle;
+    }
+
+    .welcome-note {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .welcome-note strong { color: var(--accent); }
+
+    @media (max-width: 520px) {
+      .card { padding: 32px 24px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <div class="brand-icon"><img src="/static/images/logo.svg" alt="TheraLink"></div>
+    <h1>Complete Your Profile</h1>
+    <p>Tell us a bit about yourself and the patient you're caring for</p>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator">
+    <div class="step-dot active" id="step1-dot"></div>
+    <div class="step-dot" id="step2-dot"></div>
+    <div class="step-dot" id="step3-dot"></div>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert" id="alertBox"></div>
+
+  <!-- STEP 1: Your Details -->
+  <div id="step1" class="step-panel">
+    <div class="section-title">👤 Your Details</div>
+    <div class="section-subtitle">We need basic information about you</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="userName" placeholder="Your full name" required value="{{ user_name or '' }}" />
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="userAge" placeholder="Age" min="1" max="120" required />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="userPhone" placeholder="+91 98765 43210" />
+    </div>
+
+    <div class="form-group">
+      <label>Relationship with Patient</label>
+      <div class="relation-options">
+        <div class="relation-pill" data-rel="Father" onclick="selectRelation(this)">👨 Father</div>
+        <div class="relation-pill" data-rel="Mother" onclick="selectRelation(this)">👩 Mother</div>
+        <div class="relation-pill" data-rel="Caretaker" onclick="selectRelation(this)">🤝 Caretaker</div>
+        <div class="relation-pill" data-rel="Spouse" onclick="selectRelation(this)">💑 Spouse</div>
+        <div class="relation-pill" data-rel="Sibling" onclick="selectRelation(this)">👫 Sibling</div>
+        <div class="relation-pill" data-rel="Self" onclick="selectRelation(this)">🙋 Self (Patient)</div>
+        <div class="relation-pill" data-rel="Other" onclick="selectRelation(this)">✏️ Other</div>
+      </div>
+      <div class="manual-relation" id="manualRelation">
+        <input type="text" id="customRelation" placeholder="Type your relationship (e.g., Uncle, Nurse, Friend)" />
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="goToStep(2)">
+      <span class="btn-text">Continue → Patient Details</span>
+    </button>
+  </div>
+
+  <!-- STEP 2: Patient Details -->
+  <div id="step2" class="step-panel" style="display:none;">
+    <div class="section-title">🏥 Patient Details</div>
+    <div class="section-subtitle">Information about the patient being monitored</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Patient Name</label>
+        <input type="text" id="patientName" placeholder="Patient's full name" required />
+      </div>
+      <div class="form-group">
+        <label>Patient Age</label>
+        <input type="number" id="patientAge" placeholder="Age" min="0" max="120" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="patientGender">
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Blood Group</label>
+        <select id="patientBlood">
+          <option value="">Select blood group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Emergency Contact Number</label>
+      <input type="tel" id="emergencyContact" placeholder="+91 98765 43210" />
+    </div>
+
+    <button class="btn btn-primary" onclick="goToStep(3)">
+      <span class="btn-text">Continue → Medical Conditions</span>
+    </button>
+    <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+  </div>
+
+  <!-- STEP 3: Medical Conditions -->
+  <div id="step3" class="step-panel" style="display:none;">
+    <div class="section-title">📋 Medical Conditions</div>
+    <div class="section-subtitle">List any existing conditions or notes</div>
+
+    <div class="patient-section">
+      <div class="section-title">⚕️ Known Conditions</div>
+
+      <div class="condition-checkboxes" style="display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;">
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Diabetes" class="condition-cb" style="accent-color:var(--accent);"> Diabetes
+        </label>
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Hypertension" class="condition-cb" style="accent-color:var(--accent);"> Hypertension
+        </label>
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Heart Disease" class="condition-cb" style="accent-color:var(--accent);"> Heart Disease
+        </label>
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Asthma" class="condition-cb" style="accent-color:var(--accent);"> Asthma
+        </label>
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Epilepsy" class="condition-cb" style="accent-color:var(--accent);"> Epilepsy
+        </label>
+        <label class="relation-pill" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" value="Alzheimer's" class="condition-cb" style="accent-color:var(--accent);"> Alzheimer's
+        </label>
+      </div>
+
+      <div class="form-group" style="margin-top:10px;">
+        <label>Other Conditions (comma separated)</label>
+        <input type="text" id="otherConditions" placeholder="e.g., Arthritis, Thyroid" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Current Medications</label>
+      <input type="text" id="medications" placeholder="e.g., Metformin, Aspirin" />
+    </div>
+
+    <div class="form-group">
+      <label>Allergies</label>
+      <input type="text" id="allergies" placeholder="e.g., Penicillin, Peanuts" />
+    </div>
+
+    <div class="form-group">
+      <label>Additional Notes</label>
+      <input type="text" id="additionalNotes" placeholder="Any important notes for monitoring" />
+    </div>
+
+    <button class="btn btn-primary" id="submitBtn" onclick="submitProfile()">
+      <span class="btn-text">✓ Save & Go to Dashboard</span>
+      <span class="btn-loader"><span class="spinner"></span></span>
+    </button>
+    <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+  </div>
+
+  <p class="welcome-note">
+    Welcome, <strong id="welcomeEmail">{{ user_email or 'User' }}</strong><br/>
+    All data is stored securely on your local server.
+  </p>
+</div>
+
+<script>
+  let selectedRelation = '';
+  let currentStep = 1;
+
+  function selectRelation(el) {
+    document.querySelectorAll('.relation-pill[data-rel]').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    selectedRelation = el.dataset.rel;
+
+    const manualDiv = document.getElementById('manualRelation');
+    if (selectedRelation === 'Other') {
+      manualDiv.classList.add('show');
+    } else {
+      manualDiv.classList.remove('show');
+    }
+  }
+
+  function goToStep(step) {
+    // Validate current step before moving forward
+    if (step > currentStep) {
+      if (currentStep === 1 && !validateStep1()) return;
+      if (currentStep === 2 && !validateStep2()) return;
+    }
+
+    // Hide all, show target
+    document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('step' + step).style.display = 'block';
+
+    // Update dots
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById('step' + i + '-dot');
+      dot.classList.remove('active', 'done');
+      if (i < step) dot.classList.add('done');
+      else if (i === step) dot.classList.add('active');
+    }
+
+    currentStep = step;
+    clearAlert();
+  }
+
+  function validateStep1() {
+    const name = document.getElementById('userName').value.trim();
+    const age  = document.getElementById('userAge').value;
+    if (!name) { showAlert('Please enter your full name.'); return false; }
+    if (!age || age < 1) { showAlert('Please enter a valid age.'); return false; }
+    if (!selectedRelation) { showAlert('Please select your relationship with the patient.'); return false; }
+    if (selectedRelation === 'Other' && !document.getElementById('customRelation').value.trim()) {
+      showAlert('Please type your relationship.');
+      return false;
+    }
+    return true;
+  }
+
+  function validateStep2() {
+    const name = document.getElementById('patientName').value.trim();
+    const age  = document.getElementById('patientAge').value;
+    if (!name) { showAlert('Please enter patient name.'); return false; }
+    if (!age || age < 0) { showAlert('Please enter patient age.'); return false; }
+    return true;
+  }
+
+  function showAlert(msg, type='error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = 'alert ' + type;
+  }
+  function clearAlert() {
+    const box = document.getElementById('alertBox');
+    box.className = 'alert';
+    box.textContent = '';
+  }
+
+  async function submitProfile() {
+    clearAlert();
+    const btn = document.getElementById('submitBtn');
+    btn.classList.add('loading');
+
+    // Gather conditions
+    const checkedConditions = Array.from(document.querySelectorAll('.condition-cb:checked')).map(c => c.value);
+    const otherConds = document.getElementById('otherConditions').value.trim();
+    if (otherConds) {
+      otherConds.split(',').forEach(c => { if (c.trim()) checkedConditions.push(c.trim()); });
+    }
+
+    const relation = selectedRelation === 'Other'
+      ? document.getElementById('customRelation').value.trim()
+      : selectedRelation;
+
+    const profileData = {
+      user: {
+        name: document.getElementById('userName').value.trim(),
+        age: parseInt(document.getElementById('userAge').value),
+        phone: document.getElementById('userPhone').value.trim(),
+        relationship: relation
+      },
+      patient: {
+        name: document.getElementById('patientName').value.trim(),
+        age: parseInt(document.getElementById('patientAge').value),
+        gender: document.getElementById('patientGender').value,
+        blood_group: document.getElementById('patientBlood').value,
+        emergency_contact: document.getElementById('emergencyContact').value.trim()
+      },
+      medical: {
+        conditions: checkedConditions,
+        medications: document.getElementById('medications').value.trim(),
+        allergies: document.getElementById('allergies').value.trim(),
+        notes: document.getElementById('additionalNotes').value.trim()
+      }
+    };
+
+    try {
+      const res = await fetch('/profile/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileData)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showAlert('Profile saved! Redirecting to dashboard...', 'success');
+        setTimeout(() => window.location.href = '/dashboard', 1200);
+      } else {
+        showAlert(data.message || 'Failed to save profile.');
+      }
+    } catch {
+      showAlert('Network error. Please try again.');
+    } finally {
+      btn.classList.remove('loading');
+    }
+  }
+</script>
+</body>
+</html>

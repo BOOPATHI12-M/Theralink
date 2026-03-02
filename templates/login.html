@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TheraLink — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --pink:     #f5e6f0;
+      --lavender: #e8daf0;
+      --deep:     #c084c8;
+      --accent:   #9333ea;
+      --dark:     #1a0a2e;
+      --text:     #3b1f5e;
+      --muted:    #7c5fa0;
+      --white:    #ffffff;
+      --error:    #ef4444;
+      --success:  #22c55e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--lavender) 50%, #ddd6f3 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Floating background shapes */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(192,132,200,0.3), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(147,51,234,0.2), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(147,51,234,0.15), 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 480px;
+      padding: 48px 44px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .brand-icon {
+      width: 64px; height: 64px;
+      margin-bottom: 14px;
+    }
+    .brand-icon img {
+      width: 100%; height: 100%;
+      border-radius: 14px;
+    }
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Tab switcher */
+    .tabs {
+      display: flex;
+      background: var(--pink);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--accent);
+      box-shadow: 0 2px 8px rgba(147,51,234,0.12);
+    }
+
+    /* Forms */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2d9f3;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--dark);
+      background: rgba(255,255,255,0.9);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: var(--deep);
+      box-shadow: 0 0 0 4px rgba(192,132,200,0.2);
+    }
+    .form-group input::placeholder { color: #bba8d4; }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--deep), var(--accent));
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(147,51,234,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(147,51,234,0.45);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .divider {
+      display: flex; align-items: center;
+      gap: 12px;
+      margin: 22px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: #e2d9f3;
+    }
+    .divider span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Google button */
+    .google-btn {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #e2d9f3;
+      border-radius: 12px;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .google-btn:hover {
+      border-color: var(--deep);
+      box-shadow: 0 2px 12px rgba(192,132,200,0.2);
+      transform: translateY(-1px);
+    }
+    .google-icon {
+      width: 22px; height: 22px;
+    }
+
+    /* Alert box */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .alert.error  { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; display: block; }
+    .alert.success{ background: #f0fdf4; color: #16a34a;     border: 1px solid #bbf7d0; display: block; }
+
+    /* Loading spinner inside button */
+    .btn-loader { display: none; }
+    .btn.loading .btn-text  { display: none; }
+    .btn.loading .btn-loader{ display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block; vertical-align: middle;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 24px;
+      line-height: 1.6;
+    }
+
+    /* Hidden Google One Tap container */
+    #google-one-tap { position: absolute; top: 0; right: 0; }
+
+    @media (max-width: 520px) {
+      .card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <div class="brand-icon"><img src="/static/images/logo.svg" alt="TheraLink"></div>
+    <h1>TheraLink</h1>
+    <p>Patient Health Monitoring System</p>
+  </div>
+
+  <!-- Alert box -->
+  <div class="alert" id="alertBox"></div>
+
+  <!-- Tab switcher -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+    <button class="tab-btn"        onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <!-- LOGIN PANEL -->
+  <div class="form-panel active" id="loginPanel">
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg class="google-icon" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        <path fill="none" d="M0 0h48v48H0z"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <div class="divider"><span>or sign in with email</span></div>
+
+    <form id="loginForm" onsubmit="submitLogin(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Your password" required />
+      </div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">
+        <span class="btn-text">Sign In</span>
+        <span class="btn-loader"><span class="spinner"></span></span>
+      </button>
+    </form>
+  </div>
+
+  <!-- SIGNUP PANEL -->
+  <div class="form-panel" id="signupPanel">
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg class="google-icon" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        <path fill="none" d="M0 0h48v48H0z"/>
+      </svg>
+      Sign up with Google
+    </button>
+
+    <div class="divider"><span>or create with email</span></div>
+
+    <form id="signupForm" onsubmit="submitSignup(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Your full name" required />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="signupBtn">
+        <span class="btn-text">Create Account</span>
+        <span class="btn-loader"><span class="spinner"></span></span>
+      </button>
+    </form>
+  </div>
+
+  <p class="footer-note">
+    By continuing, you agree to TheraLink's terms.<br/>
+    Your health data is private and secure.
+  </p>
+</div>
+
+<!-- Hidden Google One Tap div (loaded by GIS library) -->
+<div id="google-one-tap"></div>
+
+<script>
+  // ── Tab switcher ──────────────────────────────────────────────
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) =>
+      b.classList.toggle('active', (i === 0) === (tab === 'login'))
+    );
+    document.getElementById('loginPanel').classList.toggle('active', tab === 'login');
+    document.getElementById('signupPanel').classList.toggle('active', tab === 'signup');
+    clearAlert();
+  }
+
+  function showAlert(msg, type='error') {
+    const box = document.getElementById('alertBox');
+    box.textContent = msg;
+    box.className = 'alert ' + type;
+  }
+  function clearAlert() {
+    const box = document.getElementById('alertBox');
+    box.className = 'alert';
+    box.textContent = '';
+  }
+
+  function setLoading(btnId, on) {
+    document.getElementById(btnId).classList.toggle('loading', on);
+  }
+
+  // ── Email Login ───────────────────────────────────────────────
+  async function submitLogin(e) {
+    e.preventDefault();
+    clearAlert();
+    setLoading('loginBtn', true);
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.needs_profile) {
+          window.location.href = '/profile/setup';
+        } else {
+          window.location.href = '/user-dashboard';
+        }
+      } else {
+        showAlert(data.message || 'Login failed. Check your credentials.');
+      }
+    } catch {
+      showAlert('Network error. Please try again.');
+    } finally {
+      setLoading('loginBtn', false);
+    }
+  }
+
+  // ── Email Signup ──────────────────────────────────────────────
+  async function submitSignup(e) {
+    e.preventDefault();
+    clearAlert();
+    setLoading('signupBtn', true);
+    const name     = document.getElementById('signupName').value.trim();
+    const email    = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+
+    try {
+      const res = await fetch('/auth/signup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showAlert('Account created! Setting up your profile…', 'success');
+        setTimeout(() => window.location.href = '/profile/setup', 1200);
+      } else {
+        showAlert(data.message || 'Signup failed. Try again.');
+      }
+    } catch {
+      showAlert('Network error. Please try again.');
+    } finally {
+      setLoading('signupBtn', false);
+    }
+  }
+
+  // ── Google Sign-In ────────────────────────────────────────────
+  function signInWithGoogle() {
+    // Trigger the Google One Tap / popup flow
+    google.accounts.id.prompt();
+  }
+
+  async function handleGoogleCredential(response) {
+    clearAlert();
+    try {
+      const res = await fetch('/auth/google', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ credential: response.credential })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.needs_profile) {
+          window.location.href = '/profile/setup';
+        } else {
+          window.location.href = '/user-dashboard';
+        }
+      } else {
+        showAlert(data.message || 'Google sign-in failed.');
+      }
+    } catch {
+      showAlert('Network error. Please try again.');
+    }
+  }
+
+  // Initialize Google Identity Services
+  window.addEventListener('load', () => {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: '{{ google_client_id }}',  // injected by Flask
+        callback: handleGoogleCredential,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('google-one-tap'),
+        { theme: 'outline', size: 'large', width: 380 }
+      );
+    }
+  });
+</script>
+</body>
+</html>
